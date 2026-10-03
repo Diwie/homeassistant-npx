@@ -43,4 +43,6 @@ This project is an independent community project and is not affiliated with or e
 
 ## License
 
-MIT
+GPL-3.0-or-later. See [LICENSE](LICENSE).
+
+Copyright (c) 2026 Steve Jüstel.
