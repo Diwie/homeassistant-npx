@@ -16,7 +16,9 @@ It allows Node.js-based tools and services to run as a Home Assistant app withou
 
 ## Installation
 
-Add this repository to the Home Assistant App Store:
+[![Open your Home Assistant instance and show the app repository dialog with this repository pre-filled.](https://my.home-assistant.io/badges/supervisor_add_addon_repository.svg)](https://my.home-assistant.io/redirect/supervisor_add_addon_repository/?repository_url=https%3A%2F%2Fgithub.com%2FDiwie%2Fhomeassistant-npx)
+
+Or add this repository manually to the Home Assistant App Store:
 
 https://github.com/Diwie/homeassistant-npx
 
@@ -46,11 +48,11 @@ arguments: ""
 auto_update: false
 ```
 
-On the first start the package is installed under `/config/node`. Later app restarts reuse that installation. `arguments` contains optional command-line arguments passed to the installed program; it is not a remote-access address by itself. Set `auto_update: true` only when you want npm to check/install the configured version again on every app start.
+On the first start the package is installed under `/config/node`. Later app restarts reuse that installation. The npm cache, Puppeteer browser cache and Desktop Commander device identity are also kept in persistent app storage. `arguments` contains optional command-line arguments passed to the installed program; it is not a remote-access address by itself. Set `auto_update: true` only when you want npm to check/install the configured version again on every app start.
 
 ## Persistent storage
 
-The app uses its Home Assistant app configuration directory for the npm cache, package metadata and installed Node.js modules.
+The app uses its Home Assistant app configuration directory for the npm cache, package metadata, installed Node.js modules, Puppeteer browser cache and supported tool identity data.
 
 ## Security
 
