@@ -1,15 +1,31 @@
 #!/usr/bin/with-contenv bashio
 set -e
 
-mkdir -p /config/npm /config/node
+mkdir -p /config/npm /config/node /config/puppeteer /config/desktop-commander-device
 cd /config/node
+
 export npm_config_cache=/config/npm
+export PUPPETEER_CACHE_DIR=/config/puppeteer
+
+# Preserve an existing Desktop Commander identity and keep it across updates.
+if [ -d /root/.desktop-commander-device ] && [ ! -L /root/.desktop-commander-device ]; then
+    if [ -f /root/.desktop-commander-device/device.json ] && [ ! -f /config/desktop-commander-device/device.json ]; then
+        cp /root/.desktop-commander-device/device.json /config/desktop-commander-device/device.json
+    fi
+    rm -rf /root/.desktop-commander-device
+fi
+if [ ! -e /root/.desktop-commander-device ]; then
+    ln -s /config/desktop-commander-device /root/.desktop-commander-device
+fi
 
 echo "=== Node.js NPX Service ==="
 echo "Node: $(node --version)"
 echo "npm:  $(npm --version)"
 echo "npx:  $(npx --version)"
-echo "Persistent working directory: /config/node"
+echo "Persistent npm cache:       /config/npm"
+echo "Persistent packages:        /config/node"
+echo "Persistent Puppeteer cache: /config/puppeteer"
+echo "Persistent device identity: /config/desktop-commander-device"
 
 PACKAGE="$(bashio::config 'package')"
 VERSION="$(bashio::config 'version')"
@@ -39,7 +55,7 @@ if [ -n "$PACKAGE" ]; then
 fi
 
 if [ -n "$COMMAND" ]; then
-    echo "Legacy command mode: $COMMAND"
+    echo "Command mode: $COMMAND"
     exec /bin/bash -lc "$COMMAND"
 fi
 
