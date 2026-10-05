@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.6.0 - 2026-10-05
+
+- Made Home Assistant integration explicitly opt-in
+- Added `homeassistant_bridge` option, disabled by default
+- Kept Home Assistant configuration files unmounted
+- Removed unnecessary Supervisor API permission
+
+
 ## 1.5.5 - 2026-10-05
 
 - Added controlled Home Assistant service calls through the localhost bridge
