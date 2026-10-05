@@ -27,20 +27,26 @@ echo "Persistent packages:        /config/node"
 echo "Persistent Puppeteer cache: /config/puppeteer"
 echo "Persistent device identity: /config/desktop-commander-device"
 
-if [ -n "$SUPERVISOR_TOKEN" ]; then
+HA_BRIDGE_ENABLED="$(bashio::config 'homeassistant_bridge')"
+
+if [ "$HA_BRIDGE_ENABLED" = "true" ] && [ -n "$SUPERVISOR_TOKEN" ]; then
     HA_HTTP="$(curl -sS -o /dev/null -w '%{http_code}' -H "Authorization: Bearer $SUPERVISOR_TOKEN" http://supervisor/core/api/ || true)"
     if [ "$HA_HTTP" = "200" ]; then
         echo "Home Assistant API: OK"
     else
         echo "Home Assistant API: unavailable (HTTP $HA_HTTP)"
     fi
-else
+elif [ "$HA_BRIDGE_ENABLED" = "true" ]; then
     echo "Home Assistant API: SUPERVISOR_TOKEN unavailable"
+else
+    echo "Home Assistant bridge: disabled"
 fi
 
-node /ha-bridge.js &
-HA_BRIDGE_PID=$!
-echo "HA bridge PID: $HA_BRIDGE_PID"
+if [ "$HA_BRIDGE_ENABLED" = "true" ]; then
+    node /ha-bridge.js &
+    HA_BRIDGE_PID=$!
+    echo "HA bridge PID: $HA_BRIDGE_PID"
+fi
 
 PACKAGE="$(bashio::config 'package')"
 VERSION="$(bashio::config 'version')"
