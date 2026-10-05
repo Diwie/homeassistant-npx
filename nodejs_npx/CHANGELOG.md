@@ -1,5 +1,30 @@
 # Changelog
 
+## 1.5.5 - 2026-10-05
+
+- Added controlled Home Assistant service calls through the localhost bridge
+- Added JSON validation and a request-size limit for service calls
+- Kept the Supervisor token isolated from Desktop Commander
+
+## 1.5.4 - 2026-10-05
+
+- Added a localhost-only Home Assistant API bridge
+- Added read-only entity state access without exposing the Supervisor token
+- Verified direct state access through Desktop Commander
+
+## 1.5.3 - 2026-10-05
+
+- Added Home Assistant API diagnostics during s6 startup
+- Verified authenticated Home Assistant API access in the app startup context
+
+## 1.5.2 - 2026-10-05
+
+- Enabled Supervisor API access for authentication diagnostics
+
+## 1.5.1 - 2026-10-05
+
+- Enabled Home Assistant API access
+
 ## 1.5.0 - 2026-10-04
 
 - Added dedicated Home Assistant app documentation
