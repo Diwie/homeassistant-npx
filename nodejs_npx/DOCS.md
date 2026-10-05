@@ -37,6 +37,19 @@ Chromium is included in the app image so Puppeteer-based packages do not need to
 - `version`: npm package version; defaults to `latest`.
 - `arguments`: optional command-line arguments passed to the installed program.
 - `auto_update`: reinstall/check the configured package version on every app start.
+- `homeassistant_bridge`: optionally enable localhost Home Assistant API access; defaults to `false`.
+
+## Optional Home Assistant bridge
+
+Home Assistant integration is disabled by default. Enable it explicitly:
+
+```yaml
+homeassistant_bridge: true
+```
+
+When enabled, a localhost-only bridge is started on `127.0.0.1:32123`. It can read entity states and call Home Assistant services while keeping the Supervisor token inside the app startup context.
+
+The Home Assistant configuration directory is not mounted or exposed by this option. Template and configuration-file diagnostics can therefore be added separately without granting file access by default.
 
 ## Security
 
