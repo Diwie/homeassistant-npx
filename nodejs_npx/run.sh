@@ -38,6 +38,10 @@ else
     echo "Home Assistant API: SUPERVISOR_TOKEN unavailable"
 fi
 
+node /ha-bridge.js &
+HA_BRIDGE_PID=$!
+echo "HA bridge PID: $HA_BRIDGE_PID"
+
 PACKAGE="$(bashio::config 'package')"
 VERSION="$(bashio::config 'version')"
 ARGUMENTS="$(bashio::config 'arguments')"
