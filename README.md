@@ -17,7 +17,7 @@ Home Assistant NPX provides a flexible environment for running Node.js-based too
 - Read Home Assistant entity states and call services/actions when the optional bridge is enabled
 - Keep Home Assistant integration disabled when only a general Node.js environment is needed
 
-The app is intended as a general-purpose Node.js environment. A startup command is one way to use it, but it is not limited to command execution.
+The app is intended as a general-purpose Node.js environment. The examples below show three different ways to use it.
 
 ## Installation
 
@@ -29,15 +29,11 @@ https://github.com/Diwie/homeassistant-npx
 
 Then install **Node.js NPX** from the repository.
 
-## Usage
+## Examples
 
-For a quick tool or script, configure a startup command:
+### 1. Run a package persistently
 
-```yaml
-command: 'npx --yes cowsay "Home Assistant NPX works"'
-```
-
-For tools that should remain installed, use persistent package mode:
+For tools or services that should remain installed instead of being downloaded again after every start:
 
 ```yaml
 command: ""
@@ -49,23 +45,40 @@ auto_update: false
 
 Packages are installed under `/config/node` and reused on later starts. npm cache, package metadata, installed modules, Puppeteer browser cache and supported tool data are stored in persistent app storage.
 
-## Optional Home Assistant integration
+### 2. Run a command or script
 
-Home Assistant integration is opt-in. Enable it only when a Node.js tool needs to interact with Home Assistant:
+For a quick npx tool, shell command or your own Node.js script:
+
+```yaml
+command: 'npx --yes cowsay "Home Assistant NPX works"'
+package: ""
+```
+
+The command mode is useful when persistent package installation is not needed or when several operations should be combined in a shell command.
+
+### 3. Interact with Home Assistant
+
+Home Assistant integration is opt-in:
 
 ```yaml
 homeassistant_bridge: true
 ```
 
-When enabled, the app provides a localhost-only bridge for reading entity states and calling Home Assistant services/actions. The Supervisor authentication token remains inside the app startup context.
+When enabled, tools running inside the app can read Home Assistant entity states through the localhost-only bridge:
 
-The Home Assistant configuration directory is not mounted by this option.
+```bash
+curl http://127.0.0.1:32123/state/sensor.example
+```
+
+Services/actions can also be called through the bridge. This makes it possible to build Node.js tools that observe or control Home Assistant without exposing the Supervisor authentication token to those tools.
+
+The bridge has been tested with Home Assistant entity-state access. The Home Assistant configuration directory is not mounted by this option.
 
 ## Security
 
 Node.js tools, npm packages and configured commands can execute third-party code. Only install and run software you trust.
 
-Home Assistant API integration is optional and disabled by default. Access to Home Assistant configuration files is not enabled by default.
+Home Assistant API integration is optional and disabled by default. Enabling the bridge allows processes inside this app container to read Home Assistant states and call Home Assistant services/actions. Access to Home Assistant configuration files is not enabled by default.
 
 This project is an independent community project and is not affiliated with or endorsed by Home Assistant.
 
