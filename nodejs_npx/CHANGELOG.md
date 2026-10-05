@@ -4,13 +4,13 @@
 
 - Added controlled Home Assistant service calls through the localhost bridge
 - Added JSON validation and a request-size limit for service calls
-- Kept the Supervisor token isolated from Desktop Commander
+- Kept the Supervisor token isolated from local client processes
 
 ## 1.5.4 - 2026-10-05
 
 - Added a localhost-only Home Assistant API bridge
 - Added read-only entity state access without exposing the Supervisor token
-- Verified direct state access through Desktop Commander
+- Verified direct state access through the localhost bridge
 
 ## 1.5.3 - 2026-10-05
 
