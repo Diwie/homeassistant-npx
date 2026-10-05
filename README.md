@@ -1,18 +1,23 @@
 # Home Assistant NPX
 
-A persistent Node.js, npm and npx environment for Home Assistant OS.
+A persistent Node.js, npm and npx runtime and toolbox for Home Assistant OS.
 
-It allows Node.js-based tools and services to run as a Home Assistant app without modifying the Home Assistant OS host.
+Home Assistant NPX provides a flexible environment for running Node.js-based tools, scripts and services as an isolated Home Assistant app without modifying the Home Assistant OS host.
 
-## Features
+## What you can do
 
-- Node.js, npm and npx
-- Simple configurable startup command
-- Optional persistent npm package installations
-- Configurable package, version and arguments
-- Optional automatic package updates
-- Automatic startup with Home Assistant
-- Runs isolated as a Home Assistant app
+- Run Node.js scripts, npm packages and npx tools on Home Assistant OS
+- Install npm packages persistently and reuse them after app restarts and updates
+- Run CLI tools, development utilities, diagnostics and automation helpers
+- Host long-running Node.js services
+- Use tools that depend on Chromium or Puppeteer
+- Select package versions and pass custom arguments
+- Optionally update configured packages automatically
+- Optionally interact with Home Assistant through its API
+- Read Home Assistant entity states and call services/actions when the optional bridge is enabled
+- Keep Home Assistant integration disabled when only a general Node.js environment is needed
+
+The app is intended as a general-purpose Node.js environment. A startup command is one way to use it, but it is not limited to command execution.
 
 ## Installation
 
@@ -24,39 +29,43 @@ https://github.com/Diwie/homeassistant-npx
 
 Then install **Node.js NPX** from the repository.
 
-## Command mode
+## Usage
 
-The first and simplest option is `command`:
+For a quick tool or script, configure a startup command:
 
 ```yaml
 command: 'npx --yes cowsay "Home Assistant NPX works"'
 ```
 
-If `package` is left empty, this command is executed when the app starts.
-
-## Optional persistent package mode
-
-For large packages that should not be downloaded again after every restart, the optional package fields can be used.
-
-Example for Desktop Commander:
+For tools that should remain installed, use persistent package mode:
 
 ```yaml
 command: ""
-package: "@wonderwhy-er/desktop-commander"
+package: "cowsay"
 version: "latest"
-arguments: ""
+arguments: "Home Assistant NPX works"
 auto_update: false
 ```
 
-On the first start the package is installed under `/config/node`. Later app restarts reuse that installation. The npm cache, Puppeteer browser cache and Desktop Commander device identity are also kept in persistent app storage. `arguments` contains optional command-line arguments passed to the installed program; it is not a remote-access address by itself. Set `auto_update: true` only when you want npm to check/install the configured version again on every app start.
+Packages are installed under `/config/node` and reused on later starts. npm cache, package metadata, installed modules, Puppeteer browser cache and supported tool data are stored in persistent app storage.
 
-## Persistent storage
+## Optional Home Assistant integration
 
-The app uses its Home Assistant app configuration directory for the npm cache, package metadata, installed Node.js modules, Puppeteer browser cache and supported tool identity data.
+Home Assistant integration is opt-in. Enable it only when a Node.js tool needs to interact with Home Assistant:
+
+```yaml
+homeassistant_bridge: true
+```
+
+When enabled, the app provides a localhost-only bridge for reading entity states and calling Home Assistant services/actions. The Supervisor authentication token remains inside the app startup context.
+
+The Home Assistant configuration directory is not mounted by this option.
 
 ## Security
 
-Configured npm packages and commands can download and execute third-party code. Only run packages and commands that you trust.
+Node.js tools, npm packages and configured commands can execute third-party code. Only install and run software you trust.
+
+Home Assistant API integration is optional and disabled by default. Access to Home Assistant configuration files is not enabled by default.
 
 This project is an independent community project and is not affiliated with or endorsed by Home Assistant.
 
