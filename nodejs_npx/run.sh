@@ -27,6 +27,17 @@ echo "Persistent packages:        /config/node"
 echo "Persistent Puppeteer cache: /config/puppeteer"
 echo "Persistent device identity: /config/desktop-commander-device"
 
+if [ -n "$SUPERVISOR_TOKEN" ]; then
+    HA_HTTP="$(curl -sS -o /dev/null -w '%{http_code}' -H "Authorization: Bearer $SUPERVISOR_TOKEN" http://supervisor/core/api/ || true)"
+    if [ "$HA_HTTP" = "200" ]; then
+        echo "Home Assistant API: OK"
+    else
+        echo "Home Assistant API: unavailable (HTTP $HA_HTTP)"
+    fi
+else
+    echo "Home Assistant API: SUPERVISOR_TOKEN unavailable"
+fi
+
 PACKAGE="$(bashio::config 'package')"
 VERSION="$(bashio::config 'version')"
 ARGUMENTS="$(bashio::config 'arguments')"
