@@ -1,10 +1,9 @@
 name: "Node.js NPX"
 description: "Persistent Node.js, npm and NPX environment for Home Assistant OS"
-version: "1.5.5"
+version: "1.6.0"
 slug: "nodejs_npx"
 init: false
 homeassistant_api: true
-hassio_api: true
 arch:
   - amd64
 startup: services
@@ -17,9 +16,11 @@ options:
   version: "latest"
   arguments: ""
   auto_update: false
+  homeassistant_bridge: false
 schema:
   command: str
   package: str?
   version: str?
   arguments: str?
   auto_update: bool?
+  homeassistant_bridge: bool?
