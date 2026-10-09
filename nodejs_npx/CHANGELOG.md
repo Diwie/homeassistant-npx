@@ -1,3 +1,8 @@
+## 1.6.4
+- Add read-only `/diagnostics/capabilities` endpoint to check the availability of a fixed set of Home Assistant Core, Supervisor, and host diagnostic interfaces.
+- Return HTTP status codes only; no log contents or credentials.
+- Keep existing bridge endpoints unchanged.
+
 ## 1.6.2
 - Add optional read-only ICS/calendar error-log diagnostics at `GET /diagnostics/ics-errors`.
 - Filter calendar-related log entries and redact URLs and common credentials before returning them.
