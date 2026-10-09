@@ -1,3 +1,8 @@
+## 1.6.5
+- Enable `hassio_api: true` in addition to `homeassistant_api: true` to allow the optional diagnostic bridge to check Supervisor API endpoints.
+- No changes to calendar configuration or existing command behavior.
+- Access to individual endpoints remains subject to Supervisor permissions and must be verified after installation.
+
 ## 1.6.4
 - Add read-only `/diagnostics/capabilities` endpoint to check the availability of a fixed set of Home Assistant Core, Supervisor, and host diagnostic interfaces.
 - Return HTTP status codes only; no log contents or credentials.
