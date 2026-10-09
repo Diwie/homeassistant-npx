@@ -1,3 +1,8 @@
+## 1.6.7
+- Switch ICS diagnostics to the working Supervisor Core logs endpoint (`/core/logs`).
+- Return aggregated calendar-related keyword and HTTP-status mentions instead of raw log entries, avoiding disclosure of calendar URLs and credentials.
+- Keep existing endpoints and configuration unchanged.
+
 ## 1.6.6
 - Set `hassio_role: manager` to permit additional Supervisor diagnostic endpoints where supported.
 - This grants broader Supervisor management permissions, not read-only access; use only on trusted installations.
