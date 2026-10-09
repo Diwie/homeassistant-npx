@@ -1,3 +1,8 @@
+## 1.6.10
+- Add `GET /diagnostics/calendar-event-counts` to count events in the next 30 days for each calendar via the Home Assistant Core calendar API.
+- Return only entity IDs, event counts and request statuses, without event titles, descriptions, locations or ICS URLs.
+- Keep optional write access unchanged.
+
 ## 1.6.9
 - Classify matching ICS/calendar log messages into predefined technical error types (timeout, connection, DNS, TLS, authentication, HTTP, parsing, update).
 - Return only category labels and counts, without raw log text, URLs, credentials or event descriptions.
