@@ -88,7 +88,49 @@ async function icsErrorDiagnostics(res) {
   }
 }
 
+
+// Fixed allowlist of diagnostic API paths; no arbitrary URL or request body.
+const diagnosticEndpoints = {
+  core_api: "/core/api/",
+  core_config: "/core/api/config",
+  core_error_log: "/core/api/error_log",
+  supervisor_info: "/supervisor/info",
+  supervisor_logs: "/supervisor/logs",
+  core_logs: "/core/logs",
+  host_info: "/host/info"
+};
+
+function checkDiagnosticEndpoint(path) {
+  return new Promise(resolve => {
+    const request = http.get({
+      hostname: "supervisor",
+      port: 80,
+      path,
+      headers: {Authorization: "Bearer " + token},
+      timeout: 5000
+    }, response => {
+      const status = response.statusCode || null;
+      response.destroy();
+      resolve(status);
+    });
+    request.on("timeout", () => request.destroy());
+    request.on("error", () => resolve(null));
+  });
+}
+
+async function diagnosticCapabilities(res) {
+  const endpoints = {};
+  for (const [name, path] of Object.entries(diagnosticEndpoints)) {
+    endpoints[name] = {http_status: await checkDiagnosticEndpoint(path)};
+  }
+  send(res, 200, {
+    endpoints,
+    note: "Only HTTP status codes are returned. No log data or credentials."
+  });
+}
+
 const server = http.createServer((req, res) => {
+  if (req.method === "GET" && req.url === "/diagnostics/capabilities") return void diagnosticCapabilities(res);
   if (req.method === "GET" && req.url === "/diagnostics/ics-errors") return void icsErrorDiagnostics(res);
   if (req.method === "GET" && req.url === "/diagnostics/calendars") return void calendarDiagnostics(res);
   if (req.method === "GET" && req.url.startsWith("/state/")) {
