@@ -43,6 +43,7 @@ else
 fi
 
 if [ "$HA_BRIDGE_ENABLED" = "true" ]; then
+    export HA_BRIDGE_WRITE_ACCESS="$(bashio::config 'homeassistant_write_access')"
     node /ha-bridge.js &
     HA_BRIDGE_PID=$!
     echo "HA bridge PID: $HA_BRIDGE_PID"
