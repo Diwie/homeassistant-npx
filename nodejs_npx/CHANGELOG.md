@@ -1,3 +1,8 @@
+## 1.6.6
+- Set `hassio_role: manager` to permit additional Supervisor diagnostic endpoints where supported.
+- This grants broader Supervisor management permissions, not read-only access; use only on trusted installations.
+- Existing bridge endpoints and calendar settings remain unchanged.
+
 ## 1.6.5
 - Enable `hassio_api: true` in addition to `homeassistant_api: true` to allow the optional diagnostic bridge to check Supervisor API endpoints.
 - No changes to calendar configuration or existing command behavior.
