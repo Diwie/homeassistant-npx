@@ -1,6 +1,7 @@
 const http = require("http");
 
 const token = process.env.SUPERVISOR_TOKEN;
+const writeEnabled = process.env.HA_BRIDGE_WRITE_ACCESS === "true";
 if (!token) {
   console.error("HA bridge: SUPERVISOR_TOKEN unavailable");
   process.exit(1);
@@ -151,6 +152,7 @@ const server = http.createServer((req, res) => {
   }
 
   if (req.method === "POST" && req.url.startsWith("/service/")) {
+    if (!writeEnabled) return send(res, 403, {error: "write_access_disabled"});
     const parts = req.url.slice(9).split("/");
     if (parts.length !== 2 || !parts.every(p => /^[a-z0-9_]+$/i.test(p))) return send(res, 400, {error: "invalid_service"});
 
