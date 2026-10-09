@@ -1,3 +1,9 @@
+## 1.6.8
+- Add optional `homeassistant_write_access` setting, disabled by default.
+- Require this setting for `POST /service/<domain>/<service>` through the localhost Home Assistant bridge; disabled requests receive HTTP 403.
+- Read-only diagnostics remain available with the bridge enabled.
+- Security: this switch only controls bridge service calls; it does not revoke the add-on's existing Supervisor manager privileges or restrict other programs running inside the add-on.
+
 ## 1.6.7
 - Switch ICS diagnostics to the working Supervisor Core logs endpoint (`/core/logs`).
 - Return aggregated calendar-related keyword and HTTP-status mentions instead of raw log entries, avoiding disclosure of calendar URLs and credentials.
