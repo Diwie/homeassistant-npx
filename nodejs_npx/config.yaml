@@ -1,10 +1,11 @@
 name: "Node.js NPX"
 description: "Persistent Node.js, npm and NPX environment for Home Assistant OS"
-version: "1.6.5"
+version: "1.6.6"
 slug: "nodejs_npx"
 init: false
 homeassistant_api: true
 hassio_api: true
+hassio_role: manager
 arch:
   - amd64
 startup: services
