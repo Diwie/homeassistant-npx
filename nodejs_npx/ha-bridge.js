@@ -32,7 +32,47 @@ function proxy(res, path, method, body) {
   upstream.end();
 }
 
+
+function requestCore(path) {
+  return new Promise((resolve, reject) => {
+    http.get({
+      hostname: "supervisor", port: 80, path,
+      headers: {Authorization: "Bearer " + token}
+    }, response => {
+      let data = "";
+      response.on("data", chunk => {
+        data += chunk;
+        if (data.length > 1024 * 1024) response.destroy();
+      });
+      response.on("end", () => {
+        if (response.statusCode !== 200) return reject(new Error("HTTP " + response.statusCode));
+        resolve(data);
+      });
+    }).on("error", reject);
+  });
+}
+
+async function calendarDiagnostics(res) {
+  try {
+    const raw = await requestCore("/core/api/states");
+    const states = JSON.parse(raw);
+    const calendars = states.filter(x => x.entity_id?.startsWith("calendar.")).map(x => ({
+      entity_id: x.entity_id,
+      state: x.state,
+      friendly_name: x.attributes?.friendly_name ?? null,
+      last_changed: x.last_changed,
+      last_updated: x.last_updated,
+      has_next_event: Boolean(x.attributes?.start_time)
+    }));
+    send(res, 200, {calendars, count: calendars.length,
+      note: "States do not establish whether ICS downloads succeeded. No URLs, tokens or event descriptions are returned."});
+  } catch (error) {
+    send(res, 502, {error: "calendar_diagnostics_failed", detail: String(error.message).slice(0, 120)});
+  }
+}
+
 const server = http.createServer((req, res) => {
+  if (req.method === "GET" && req.url === "/diagnostics/calendars") return void calendarDiagnostics(res);
   if (req.method === "GET" && req.url.startsWith("/state/")) {
     const entityId = decodeURIComponent(req.url.slice(7));
     if (!/^[a-z0-9_]+\.[a-z0-9_]+$/i.test(entityId)) return send(res, 400, {error: "invalid_entity_id"});
