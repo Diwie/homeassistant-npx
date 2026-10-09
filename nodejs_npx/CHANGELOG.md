@@ -1,3 +1,8 @@
+## 1.6.1
+- Add a read-only calendar entity diagnostics endpoint to the optional Home Assistant bridge (`GET /diagnostics/calendars`).
+- Return only calendar states and timestamps, without event descriptions, calendar URLs or credentials.
+- Existing bridge routes remain unchanged.
+
 # Changelog
 
 ## 1.6.0 - 2026-10-05
