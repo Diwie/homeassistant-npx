@@ -155,7 +155,37 @@ async function diagnosticCapabilities(res) {
   });
 }
 
+
+async function calendarEventCounts(res) {
+  try {
+    const states = JSON.parse(await requestCore("/core/api/states"));
+    const calendars = states.filter(x => /^calendar\\.[a-z0-9_]+$/i.test(x.entity_id));
+    const start = new Date();
+    const end = new Date(start.getTime() + 30 * 86400000);
+    const results = [];
+    for (const calendar of calendars) {
+      const path = "/core/api/calendars/" + encodeURIComponent(calendar.entity_id)
+        + "?start=" + encodeURIComponent(start.toISOString())
+        + "&end=" + encodeURIComponent(end.toISOString());
+      try {
+        const events = JSON.parse(await requestCore(path));
+        results.push({entity_id: calendar.entity_id,
+          event_count: Array.isArray(events) ? events.length : null,
+          status: Array.isArray(events) ? "ok" : "unexpected_response"});
+      } catch (error) {
+        const code = /^HTTP [0-9]{3}$/.test(error.message) ? error.message : "request_failed";
+        results.push({entity_id: calendar.entity_id, event_count: null, status: code});
+      }
+    }
+    send(res, 200, {window_days: 30, calendars: results,
+      note: "Only event counts and request statuses are returned. No titles, locations or event descriptions."});
+  } catch (error) {
+    send(res, 502, {error: "calendar_event_counts_failed"});
+  }
+}
+
 const server = http.createServer((req, res) => {
+  if (req.method === "GET" && req.url === "/diagnostics/calendar-event-counts") return void calendarEventCounts(res);
   if (req.method === "GET" && req.url === "/diagnostics/capabilities") return void diagnosticCapabilities(res);
   if (req.method === "GET" && req.url === "/diagnostics/ics-errors") return void icsErrorDiagnostics(res);
   if (req.method === "GET" && req.url === "/diagnostics/calendars") return void calendarDiagnostics(res);
