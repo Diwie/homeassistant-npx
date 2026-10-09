@@ -1,3 +1,8 @@
+## 1.6.2
+- Add optional read-only ICS/calendar error-log diagnostics at `GET /diagnostics/ics-errors`.
+- Filter calendar-related log entries and redact URLs and common credentials before returning them.
+- Existing command and bridge functions are unchanged.
+
 ## 1.6.1
 - Add a read-only calendar entity diagnostics endpoint to the optional Home Assistant bridge (`GET /diagnostics/calendars`).
 - Return only calendar states and timestamps, without event descriptions, calendar URLs or credentials.
