@@ -74,15 +74,26 @@ async function calendarDiagnostics(res) {
 
 async function icsErrorDiagnostics(res) {
   try {
-    const raw = await requestCore("/core/api/error_log");
-    const lines = raw.split(/\\r?\\n/);
-    const matches = lines.filter(line => /(?:ics|ical|calendar|outlook|office365|microsoft|remote_calendar)/i.test(line));
-    const sanitized = matches.slice(-80).map(line => {
-      const urlPattern = new RegExp("https?:" + "/" + "/" + "[^\\\\s\\\"'<>]+", "gi");
-      return line.replace(urlPattern, "[URL REDACTED]").slice(0, 400);
+    const raw = await requestCore("/core/logs");
+    const lines = raw.split(/\r?\n/);
+    const keywords = ["ics", "ical", "calendar", "outlook", "office365", "microsoft", "remote_calendar"];
+    const matching = lines.filter(line => keywords.some(word => line.toLowerCase().includes(word)));
+    const httpStatuses = {};
+    const categories = {};
+    for (const line of matching) {
+      for (const code of (line.match(/\\b(?:400|401|403|404|408|429|500|502|503|504)\\b/g) || [])) {
+        httpStatuses[code] = (httpStatuses[code] || 0) + 1;
+      }
+      for (const keyword of keywords) {
+        if (line.toLowerCase().includes(keyword)) categories[keyword] = (categories[keyword] || 0) + 1;
+      }
+    }
+    send(res, 200, {
+      matched_lines: matching.length,
+      keyword_counts: categories,
+      status_code_mentions: httpStatuses,
+      note: "Aggregated log diagnostics only. No raw log lines, calendar URLs, tokens or event details are returned."
     });
-    send(res, 200, {matches: sanitized, count: matches.length,
-      note: "Filtered Home Assistant error log; sensitive data redacted. Review before sharing."});
   } catch (error) {
     send(res, 502, {error: "ics_log_diagnostics_failed", detail: String(error.message).slice(0, 120)});
   }
