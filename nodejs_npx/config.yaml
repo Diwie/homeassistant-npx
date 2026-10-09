@@ -1,6 +1,6 @@
 name: "Node.js NPX"
 description: "Persistent Node.js, npm and NPX environment for Home Assistant OS"
-version: "1.6.3"
+version: "1.6.4"
 slug: "nodejs_npx"
 init: false
 homeassistant_api: true
