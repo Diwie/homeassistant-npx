@@ -71,7 +71,26 @@ async function calendarDiagnostics(res) {
   }
 }
 
+
+async function icsErrorDiagnostics(res) {
+  try {
+    const raw = await requestCore("/core/api/error_log");
+    const lines = raw.split(/\\r?\\n/);
+    const matches = lines.filter(line => /(?:ics|ical|calendar|outlook|office365|microsoft|remote_calendar)/i.test(line));
+    const sanitized = matches.slice(-80).map(line => line
+      .replace(/https?:\\/\\/[^\\s"'<>]+/gi, "[URL REDACTED]")
+      .replace(/(?:Bearer\\s+)[^\\s"'<>]+/gi, "Bearer [REDACTED]")
+      .replace(/(?:token|secret|password|key|authorization)(\\s*[:=]\\s*)[^\\s,;]+/gi, "$1[REDACTED]")
+      .slice(0, 400));
+    send(res, 200, {matches: sanitized, count: matches.length,
+      note: "Filtered Home Assistant error log; sensitive data redacted. Review before sharing."});
+  } catch (error) {
+    send(res, 502, {error: "ics_log_diagnostics_failed", detail: String(error.message).slice(0, 120)});
+  }
+}
+
 const server = http.createServer((req, res) => {
+  if (req.method === "GET" && req.url === "/diagnostics/ics-errors") return void icsErrorDiagnostics(res);
   if (req.method === "GET" && req.url === "/diagnostics/calendars") return void calendarDiagnostics(res);
   if (req.method === "GET" && req.url.startsWith("/state/")) {
     const entityId = decodeURIComponent(req.url.slice(7));
