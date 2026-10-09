@@ -1,3 +1,8 @@
+## 1.6.9
+- Classify matching ICS/calendar log messages into predefined technical error types (timeout, connection, DNS, TLS, authentication, HTTP, parsing, update).
+- Return only category labels and counts, without raw log text, URLs, credentials or event descriptions.
+- Keep the optional bridge write-access setting unchanged.
+
 ## 1.6.8
 - Add optional `homeassistant_write_access` setting, disabled by default.
 - Require this setting for `POST /service/<domain>/<service>` through the localhost Home Assistant bridge; disabled requests receive HTTP 403.
