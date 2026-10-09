@@ -93,7 +93,21 @@ async function icsErrorDiagnostics(res) {
       matched_lines: matching.length,
       keyword_counts: categories,
       status_code_mentions: httpStatuses,
-      note: "Aggregated log diagnostics only. No raw log lines, calendar URLs, tokens or event details are returned."
+      error_signatures: matching.slice(-20).map(line => {
+        const patterns = [
+          ["timeout", /timed?\\s*out|timeout|deadline exceeded/i],
+          ["connection_error", /connection refused|connection reset|connecterror|clientconnectorerror/i],
+          ["dns_error", /name or service not known|dns|gaierror|nameresolutionerror/i],
+          ["tls_error", /ssl|certificate|tls/i],
+          ["authentication_error", /unauthorized|authentication|forbidden|permission denied/i],
+          ["http_error", /(?:HTTP|status|response)\\s*[:=]?\\s*[45][0-9]{2}/i],
+          ["parse_error", /parse|invalid ical|malformed|invalid calendar|valueerror/i],
+          ["update_error", /update failed|error fetching|cannot fetch|failed to load/i]
+        ];
+        const matched = patterns.filter(([, pattern]) => pattern.test(line)).map(([name]) => name);
+        return {types: matched.length ? matched : ["other_calendar_message"]};
+      }),
+      note: "Only predefined error categories and counts. No raw log lines, calendar URLs, tokens or event details are returned."
     });
   } catch (error) {
     send(res, 502, {error: "ics_log_diagnostics_failed", detail: String(error.message).slice(0, 120)});
