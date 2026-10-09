@@ -1,3 +1,8 @@
+## 1.6.11
+- Fix calendar event count diagnostics returning an empty calendar list because of an incorrectly escaped entity ID filter.
+- Use the same prefix-based calendar discovery as the working calendar state diagnostics.
+- No calendar settings or write permissions changed.
+
 ## 1.6.10
 - Add `GET /diagnostics/calendar-event-counts` to count events in the next 30 days for each calendar via the Home Assistant Core calendar API.
 - Return only entity IDs, event counts and request statuses, without event titles, descriptions, locations or ICS URLs.
