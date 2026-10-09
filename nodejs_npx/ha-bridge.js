@@ -159,7 +159,7 @@ async function diagnosticCapabilities(res) {
 async function calendarEventCounts(res) {
   try {
     const states = JSON.parse(await requestCore("/core/api/states"));
-    const calendars = states.filter(x => /^calendar\\.[a-z0-9_]+$/i.test(x.entity_id));
+    const calendars = states.filter(x => typeof x.entity_id === "string" && x.entity_id.startsWith("calendar."));
     const start = new Date();
     const end = new Date(start.getTime() + 30 * 86400000);
     const results = [];
