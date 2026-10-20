@@ -80,7 +80,7 @@ Node.js tools, npm packages and configured commands can execute third-party code
 
 Home Assistant API integration is optional and disabled by default. Enabling the bridge allows processes inside this app container to read Home Assistant states. Service/action calls through the bridge additionally require `homeassistant_write_access: true`. Access to Home Assistant configuration files is not enabled by default.
 
-**Supervisor permissions:** The current app manifest requests `hassio_api: true` and `hassio_role: manager` for advanced diagnostics. These permissions apply to the app container regardless of whether the optional bridge or its write-access switch is enabled. Only install trusted packages and commands; the bridge options are not a security boundary for arbitrary code running in the container. A future release should reduce these permissions after diagnostic compatibility is tested.
+**Supervisor permissions:** The current app manifest requests `hassio_api: true` and `hassio_role: manager` for advanced diagnostics. These permissions apply to the app container regardless of whether the optional bridge or its write-access switch is enabled. Only install trusted packages and commands; the bridge options are not a security boundary for arbitrary code running in the container. These permissions are intentionally retained because advanced Supervisor and host diagnostics depend on them; install the app only when you accept this access level.
 
 This project is an independent community project and is not affiliated with or endorsed by Home Assistant.
 
