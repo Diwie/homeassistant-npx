@@ -20,9 +20,9 @@ For larger Node.js tools, configure a package instead of downloading it with npx
 
 ```yaml
 command: ""
-package: "@wonderwhy-er/desktop-commander"
+package: "cowsay"
 version: "latest"
-arguments: ""
+arguments: "Home Assistant NPX works"
 auto_update: false
 ```
 
@@ -38,6 +38,7 @@ Chromium is included in the app image so Puppeteer-based packages do not need to
 - `arguments`: optional command-line arguments passed to the installed program.
 - `auto_update`: reinstall/check the configured package version on every app start.
 - `homeassistant_bridge`: optionally enable localhost Home Assistant API access; defaults to `false`.
+- `homeassistant_write_access`: optionally allow service calls through the bridge; defaults to `false`.
 
 ## Optional Home Assistant bridge
 
@@ -47,7 +48,7 @@ Home Assistant integration is disabled by default. Enable it explicitly:
 homeassistant_bridge: true
 ```
 
-When enabled, a localhost-only bridge is started on `127.0.0.1:32123`. It can read entity states and call Home Assistant services while keeping the Supervisor token inside the app startup context.
+When enabled, a localhost-only bridge is started on `127.0.0.1:32123`. It can read entity states. Service calls through the bridge require `homeassistant_write_access: true` in addition. The app currently requests Supervisor manager permissions; the write-access toggle limits only bridge routes, not other processes in the container.
 
 The Home Assistant configuration directory is not mounted or exposed by this option. Template and configuration-file diagnostics can therefore be added separately without granting file access by default.
 
